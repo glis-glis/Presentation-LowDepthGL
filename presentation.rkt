@@ -307,6 +307,18 @@
  (emph "Analysis Tools for Low-coverage and Ancient Samples")
  (blank 20)
  (para (bt "48 Tasks"))
- (aitem "PMD, call, theta, inbreeding, GLF, majorMinor, ...")
+ (aitem "call, theta, inbreeding, GLF, majorMinor, ...")
  (eaitem "simulate")
+ (eaitem "PMD")
  (eaitem "recal"))
+
+(slide
+ #:name "ATLAS"
+ (shadow-frame (big (t "Simulation")))
+
+ (para (tt "~/Git/atlas/build/atlas --task simulate --ploidy 1")
+ (tt "  --PMD \"singleStrand[0.5,0.1,0.01]\"")
+ (tt "  --recal \"intercept[0.1];quality:polynomial[0.8,0.2,0.01]\""))
+ (blank 20)
+ (hc-append (scale-to-fit (bitmap "imgs/PMD.png") (/ client-w 2) (/ client-h 1))
+            (scale-to-fit (bitmap "imgs/recal.png") (/ client-w 2) (/ client-h 1))))
