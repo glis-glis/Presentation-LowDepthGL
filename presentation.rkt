@@ -8,6 +8,7 @@
 (require slideshow/code)
 (require pict/shadow)
 (require slideshow/text)
+(require slideshow/latex)
 
 (define (tt str)
   (text str (current-code-font) (current-font-size)))
@@ -302,6 +303,7 @@
  (shadow-frame (big (t "PMD Model")))
  (para (tt "p") (t " = Distance from 5' read end")
        (tt "PMD(p) = a*exp(-b*p) + c"))
+ (para ($"x^2"))
  )
 
 (slide
