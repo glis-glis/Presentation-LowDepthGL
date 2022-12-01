@@ -36,6 +36,9 @@
 (define (aitem str)
   (item #:bullet (arrowhead (/ gap-size 2) 0) str))
 
+(define (eaitem str)
+  (item #:bullet (arrowhead (/ gap-size 2) 0) (emph str)))
+
 (define (eitem str)
   (item #:bullet (ghost (arrowhead (/ gap-size 2) 0)) str))
 
@@ -48,7 +51,7 @@
 
 (slide
  #:name "Title"
- (shadow-frame (big (t "Estimating Sequencing Error Rates")))
+ (shadow-frame (big (t "Estimating Sequencing Error")))
  ;(hc-append (bt "Why") (t " and ") (bt "How"))
  (blank 50)
  (emph "Andreas Füglistaler, PhD")
@@ -151,7 +154,7 @@
         (tt "C = ?")
         (tt "G = ?")
         (tt "T = ?")
-        (ghost(tt "T = 0.123456")))
+        (ghost(tt "C = 0.7x(0.2x0.05)")))
   (arrow 30 0)
   (para #:width 0.5
         (tt "AA = ?")
@@ -164,7 +167,7 @@
         (tt "GG = ?")
         (tt "GT = ?")
         (tt "TT = ?")
-        (ghost(tt "TT = 0.123456")))))
+        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
 
 (slide
  #:name "Genotype Likelihoods"
@@ -189,7 +192,7 @@
         (tt "C = 0")
         (tt "G = 0")
         (tt "T = 1")
-        (ghost(tt "T = 0.123456")))
+        (ghost(tt "C = 0.7x(0.2x0.05)")))
   (arrow 30 0)
   (para #:width 0.5
         (tt "AA = 0")
@@ -202,13 +205,13 @@
         (tt "GG = 0")
         (tt "GT = 0.5x(0 + 1)")
         (tt "TT = 1")
-        (ghost(tt "TT = 0.123456789")))))
+        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
 
 
 (slide
- #:name "Genotype Likelihoods"
- (shadow-frame (big (t "Genotype Likelihoods")))
- (emph "Assuming Prob(C-T) = 0.3")
+ #:name "Genotype Likelihoods PMD"
+ (shadow-frame (big (t "Post Mortem Dammage")))
+ (emph "Assuming PMD(C-T) = 0.3")
  (ghost (emph ""))
  (ghost (emph ""))
  (blank 20)
@@ -228,7 +231,7 @@
         (tt "C = 0.3")
         (tt "G = 0")
         (tt "T = 1")
-        (ghost(tt "T = 0.123456789")))
+        (ghost(tt "C = 0.7x(0.2x0.05)")))
   (arrow 30 0)
   (para #:width 0.5
         (tt "AA = 0")
@@ -236,16 +239,16 @@
         (tt "AG = 0")
         (tt "AT = 0.5x(0 + 1)")
         (tt "CC = 0.3")
-        (tt "CG = 0.5x(0 + 0.3)")
+        (tt "CG = 0.5x(0.3 + 0)")
         (tt "CT = 0.5x(0.3 + 1)")
         (tt "GG = 0")
         (tt "GT = 0.5x(0 + 1)")
         (tt "TT = 1")
-        (ghost(tt "TT = 0.123456789")))))
+        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
 
 (slide
- #:name "Genotype Likelihoods"
- (shadow-frame (big (t "Genotype Likelihoods")))
+ #:name "Genotype Likelihoods eps"
+ (shadow-frame (big (t "Sequencing Errors")))
  (emph "Assuming PMD(C-T) = 0.3,")
  (emph "Sequencing Error eps = 0.05,")
  (emph "rho(A-T) = 0.3, rho(C-T) = 0.2, rho(G-T) = 0.5")
@@ -267,7 +270,7 @@
         (tt "    + 0.3x(0.95)")
         (tt "G = 0.5x0.05")
         (tt "T = 0.95")
-        (ghost(tt "T = 0.123456789")))
+        (ghost(tt "C = 0.7x(0.2x0.05)")))
   (arrow 30 0)
   (para #:width 0.5
         (tt "AA = 0.015")
@@ -280,4 +283,30 @@
         (tt "GG = 0.025")
         (tt "GT = 0.48")
         (tt "TT = 0.95")
-        (ghost(tt "TT = 0.123456789")))))
+        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
+
+(slide
+ #:name "Calculating Genotype Likelihoods"
+ (shadow-frame (big (t "Calculating Genotype Likelihoods")))
+ (para (emph "1. Estimate PMD"))
+ (aitem "Compare to reference")
+ (aitem "Assume symetric mutations")
+ (item #:bullet (bt "Covariate:") "Position")
+ (blank 10)
+ (para (emph "2. Estimate Sequencing Errors"))
+ (aitem "Use monomorphic/haploid sites")
+ (item #:bullet (bt "Covariates:") " Sequencing quality, Mapping quality, Context, Position, Fragment length")
+ (blank 10)
+ (para (emph "3. Estimate Genotype Likelihoods"))
+ (aitem "Calculate theta, Fst, inbreeding coefficient, ...")
+ )
+
+(slide
+ #:name "ATLAS"
+ (shadow-frame (big (t "ATLAS")))
+ (emph "Analysis Tools for Low-coverage and Ancient Samples")
+ (blank 20)
+ (para (bt "48 Tasks"))
+ (aitem "PMD, call, theta, inbreeding, GLF, majorMinor, ...")
+ (eaitem "simulate")
+ (eaitem "recal"))
