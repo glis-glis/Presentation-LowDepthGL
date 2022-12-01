@@ -126,7 +126,7 @@
                        gap-size
                        8) gap-size))
   (arrow 30 0)
-  (para #:width 0.5 (hc-append (big (tt "AT, CT, GT ")) (big (t "?")))))
+  (para #:width 0.5 (hc-append (big (tt "AT, CT, GT, TT ")) (big (t "?")))))
  (blank 50)
  'next 
  (emph "Is it even a T?"))
@@ -298,6 +298,18 @@
  (eaitem "recal"))
 
 (slide
+ #:name "PMD Model"
+ (shadow-frame (big (t "PMD Model")))
+ (para (tt "p") (t " = Distance from 5' read end")
+       (tt "PMD(p) = a*exp(-b*p) + c"))
+ )
+
+(slide
+ #:name "Recal Model"
+ (shadow-frame (big (t "Recal Model")))
+ (bitmap "imgs/DAG.png"))
+
+(slide
  #:name "Simulation"
  (shadow-frame (big (t "Simulation")))
 
@@ -339,7 +351,8 @@
 
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam")))
  (blank 50)
- (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt --recal *_recal.txt"))))
+ (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam"))
+ (small (tt "  --pmd *_PMD.txt --recal *_recal.txt"))))
 
 (slide
  #:name "Calculating Genotype Likelihoods"
