@@ -131,7 +131,7 @@
 (slide
  #:name "Genotype Likelihoods"
  (shadow-frame (big (t "Genotype Likelihoods")))
- (emph "L(ab) = 0.5x(L(a) + L(b))")
+ (emph "L(ab) = 0.5x[L(a) + L(b)]")
  (ghost (emph ""))
  (ghost (emph ""))
  (blank 20)
@@ -246,9 +246,9 @@
 (slide
  #:name "Genotype Likelihoods"
  (shadow-frame (big (t "Genotype Likelihoods")))
- (emph "Assuming PMD(C-T) = 0.3")
- (emph "Assuming Sequencing Error eps = 0.05")
- (emph "Assuming rho(T-A) = 0.3, rho(T-C) = 0.2, rho(T-G) = 0.5")
+ (emph "Assuming PMD(C-T) = 0.3,")
+ (emph "Sequencing Error eps = 0.05,")
+ (emph "rho(A-T) = 0.3, rho(C-T) = 0.2, rho(G-T) = 0.5")
  (blank 20)
  (hc-append
   30
@@ -262,22 +262,22 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "A = 0.05x0.3")
-        (tt "C = 0.7x(0.05x0.2)")
-        (tt "  + 0.3x(0.95x0.7)")
-        (tt "G = 0.05x0.5")
-        (tt "T = 0.95x0.7")
+        (tt "A = 0.3x0.05")
+        (tt "C = 0.7x(0.2x0.05)")
+        (tt "    + 0.3x(0.95)")
+        (tt "G = 0.5x0.05")
+        (tt "T = 0.95")
         (ghost(tt "T = 0.123456789")))
   (arrow 30 0)
   (para #:width 0.5
         (tt "AA = 0.015")
         (tt "AC = 0.11")
         (tt "AG = 0.02")
-        (tt "AT = 0.34")
+        (tt "AT = 0.48")
         (tt "CC = 0.20")
         (tt "CG = 0.12")
-        (tt "CT = 0.44")
+        (tt "CT = 0.58")
         (tt "GG = 0.025")
-        (tt "GT = 0.35")
-        (tt "TT = 0.66")
+        (tt "GT = 0.48")
+        (tt "TT = 0.95")
         (ghost(tt "TT = 0.123456789")))))
