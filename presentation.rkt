@@ -8,7 +8,6 @@
 (require slideshow/code)
 (require pict/shadow)
 (require slideshow/text)
-(require slideshow/latex)
 
 (define (tt str)
   (text str (current-code-font) (current-font-size)))
@@ -129,14 +128,13 @@
   (arrow 30 0)
   (para #:width 0.5 (hc-append (big (tt "AT, CT, GT, TT ")) (big (t "?")))))
  (blank 50)
- 'next 
  (emph "Is it even a T?"))
 
 (slide
- #:name "Genotype Likelihoods"
- (shadow-frame (big (t "Genotype Likelihoods")))
- (emph "L(ab) = 0.5x[L(a) + L(b)]")
- (ghost (emph ""))
+ #:name "Likelihoods"
+ (shadow-frame (big (t "Likelihoods")))
+ (para (bt "Base Likelihoods:") (tt " L(A), L(C), L(G), L(T)")
+ (bt "Genotype Likelihood:") (tt " L(ab) = 0.5x[L(a) + L(b)]"))
  (ghost (emph ""))
  (blank 20)
  (hc-append
@@ -151,24 +149,22 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "A = ?")
-        (tt "C = ?")
-        (tt "G = ?")
-        (tt "T = ?")
-        (ghost(tt "C = 0.7x(0.2x0.05)")))
+        (tt "L(A) = ?")
+        (tt "L(C) = ?")
+        (tt "L(G) = ?")
+        (tt "L(T) = ?"))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "AA = ?")
-        (tt "AC = ?")
-        (tt "AG = ?")
-        (tt "AT = ?")
-        (tt "CC = ?")
-        (tt "CG = ?")
-        (tt "CT = ?")
-        (tt "GG = ?")
-        (tt "GT = ?")
-        (tt "TT = ?")
-        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
+        (tt "L(AA) = ?")
+        (tt "L(AC) = ?")
+        (tt "L(AG) = ?")
+        (tt "L(AT) = ?")
+        (tt "L(CC) = ?")
+        (tt "L(CG) = ?")
+        (tt "L(CT) = ?")
+        (tt "L(GG) = ?")
+        (tt "L(GT) = ?")
+        (tt "L(TT) = ?"))))
 
 (slide
  #:name "Genotype Likelihoods"
@@ -189,30 +185,39 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "A = 0")
-        (tt "C = 0")
-        (tt "G = 0")
-        (tt "T = 1")
-        (ghost(tt "C = 0.7x(0.2x0.05)")))
+        (tt "L(A) = 0")
+        (tt "L(C) = 0")
+        (tt "L(G) = 0")
+        (tt "L(T) = 1"))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "AA = 0")
-        (tt "AC = 0")
-        (tt "AG = 0")
-        (tt "AT = 0.5x(0 + 1)")
-        (tt "CC = 0")
-        (tt "CG = 0")
-        (tt "CT = 0.5x(0 + 1)")
-        (tt "GG = 0")
-        (tt "GT = 0.5x(0 + 1)")
-        (tt "TT = 1")
-        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
+        (tt "L(AA) = 0")
+        (tt "L(AC) = 0")
+        (tt "L(AG) = 0")
+        (tt "L(AT) = 0.5x(0 + 1)")
+        (tt "L(CC) = 0")
+        (tt "L(CG) = 0")
+        (tt "L(CT) = 0.5x(0 + 1)")
+        (tt "L(GG) = 0")
+        (tt "L(GT) = 0.5x(0 + 1)")
+        (tt "L(TT) = 1"))))
 
+(slide
+ #:name "Post Mortem Damage"
+ (shadow-frame (big (t "Post Mortem Damage")))
+ (para (t "Deamination of cytosine to uracil: ") (tt "C→U"))
+ (para (t "Uracil will be read as Thymin: ") (tt "C→U→T"))
+ (blank 20)
+ (para (bt "Probability of") (tt " C→T ") (bt "transition"))
+ (para (tt "     p") (t " = Distance from 5' read end"))
+ (para (tt "PMD(p) = a*exp(-b*p) + c"))
+ (scale-to-fit (bitmap "imgs/PMD_flat.png") (* client-w 0.9) (/ client-h 1))
+ )
 
 (slide
  #:name "Genotype Likelihoods PMD"
- (shadow-frame (big (t "Post Mortem Dammage")))
- (emph "Assuming PMD(C-T) = 0.3")
+ (shadow-frame (big (t "Genotype Likelihoods with PMD")))
+ (emph "Assuming PMD(C→T) = 0.3")
  (ghost (emph ""))
  (ghost (emph ""))
  (blank 20)
@@ -228,31 +233,52 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "A = 0")
-        (tt "C = 0.3")
-        (tt "G = 0")
-        (tt "T = 1")
-        (ghost(tt "C = 0.7x(0.2x0.05)")))
+        (tt "L(A) = 0")
+        (tt "L(C) = 0.3")
+        (tt "L(G) = 0")
+        (tt "L(T) = 1"))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "AA = 0")
-        (tt "AC = 0.5x(0 + 0.3)")
-        (tt "AG = 0")
-        (tt "AT = 0.5x(0 + 1)")
-        (tt "CC = 0.3")
-        (tt "CG = 0.5x(0.3 + 0)")
-        (tt "CT = 0.5x(0.3 + 1)")
-        (tt "GG = 0")
-        (tt "GT = 0.5x(0 + 1)")
-        (tt "TT = 1")
-        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
+        (tt "L(AA) = 0")
+        (tt "L(AC) = 0.5x(0 + 0.3)")
+        (tt "L(AG) = 0")
+        (tt "L(AT) = 0.5x(0 + 1)")
+        (tt "L(CC) = 0.3")
+        (tt "L(CG) = 0.5x(0.3 + 0)")
+        (tt "L(CT) = 0.5x(0.3 + 1)")
+        (tt "L(GG) = 0")
+        (tt "L(GT) = 0.5x(0 + 1)")
+        (tt "L(TT) = 1"))))
+
+(slide
+ #:name "Sequencing Errors"
+ (shadow-frame (big (t "Sequencing Errors")))
+ (para (t "Reported error probability by sequencing machine: ")
+       (tt "Q = -10xlog(E)"))
+ (para
+  (aitem "Not very accurate")
+  (aitem "Needs recalibration"))
+ (blank 20)
+ (para (bt "recal"))
+ (para (tt "R = F(Q, p, mappingQuality, fragmentLength, context)  "))
+ (blank 10)
+ (para (bt "If an error happens, then:")
+       (para (tt "ρ = [[-, A→C, A→G, A→T],"))
+       (para (tt "     [C→A, -, C→G, C→T],"))
+       (para (tt "     [G→A, G→C, -, G→T],"))
+       (para (tt "     [T→A, T→C, T→G, -]]"))))
+
+(slide
+ #:name "Sequencing Errors plot"
+ (scale-to-fit (bitmap "imgs/recal.png") (* client-w 0.9) (/ client-h 1))
+ )
 
 (slide
  #:name "Genotype Likelihoods recal"
- (shadow-frame (big (t "Sequencing Errors")))
- (para #:width 0.5 (emph "Assuming PMD(C-T) = 0.3,")
- (emph "Sequencing Error = 0.05,")
- (emph "Sequecing Error Direction: A-T = 0.3, C-T = 0.2, G-T = 0.5"))
+ (shadow-frame (big (t "Genotype Likelihoods with Recal")))
+ (para (emph "Assuming:"))
+ (para (t "PMD(C→T) = 0.3, Sequencing Error = 0.05")
+ (t "ρ(A→T) = 0.3, ρ(C→T) = 0.2, ρ(G→T) = 0.5"))
  (blank 20)
  (hc-append
   30
@@ -266,25 +292,23 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "A = 0.3x0.05")
-        (tt "C = 0.7x(0.2x0.05)")
-        (tt "    + 0.3x(0.95)")
-        (tt "G = 0.5x0.05")
-        (tt "T = 0.95")
-        (ghost(tt "C = 0.7x(0.2x0.05)")))
+        (tt "L(A) = 0.3x0.05")
+        (tt "L(C) = 0.7x(0.2x0.05)")
+        (tt "       + 0.3x(0.95)")
+        (tt "L(G) = 0.5x0.05")
+        (tt "L(T) = 0.95"))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "AA = 0.015")
-        (tt "AC = 0.11")
-        (tt "AG = 0.02")
-        (tt "AT = 0.48")
-        (tt "CC = 0.20")
-        (tt "CG = 0.12")
-        (tt "CT = 0.58")
-        (tt "GG = 0.025")
-        (tt "GT = 0.48")
-        (tt "TT = 0.95")
-        (ghost(tt "CG = 0.5x(0 + 0.3)")))))
+        (tt "L(AA) = 0.015")
+        (tt "L(AC) = 0.11")
+        (tt "L(AG) = 0.02")
+        (tt "L(AT) = 0.48")
+        (tt "L(CC) = 0.20")
+        (tt "L(CG) = 0.12")
+        (tt "L(CT) = 0.58")
+        (tt "L(GG) = 0.025")
+        (tt "L(GT) = 0.48")
+        (tt "L(TT) = 0.95"))))
 
 (slide
  #:name "ATLAS"
@@ -294,22 +318,9 @@
  (para (bt "48 Tasks"))
  (aitem "call, theta, inbreeding, GLF, majorMinor, ...")
  (blank 20)
- (eaitem "simulate")
- (eaitem "PMD")
- (eaitem "recal"))
-
-(slide
- #:name "PMD Model"
- (shadow-frame (big (t "PMD Model")))
- (para (tt "p") (t " = Distance from 5' read end")
-       (tt "PMD(p) = a*exp(-b*p) + c"))
- (para ($"x^2"))
- )
-
-(slide
- #:name "Recal Model"
- (shadow-frame (big (t "Recal Model")))
- (bitmap "imgs/DAG.png"))
+ (eaitem "Simulate data")
+ (eaitem "Estimate PMD")
+ (eaitem "Estimate recal"))
 
 (slide
  #:name "Simulation"
@@ -343,9 +354,9 @@
  (blank 10)
  (bt "also possible")
  (blank 10)
- (para (small (tt "  --recal \"intercept;quality:empiric\"")))
- (para (small (tt "  --recal \"intercept;quality:probit\"")))
- (para (small (tt "  --recal \"intercept;quality;position;context;fragmentLength;mappingQuality\""))))
+ (para (small (tt "  --recal \"intercept;quality:empiric\""))
+ (small (tt "  --recal \"intercept;quality;position;context;fragmentLength;mappingQuality\""))
+ (small (tt "  --recal \"intercept;quality:polynomial3;fragmentLength:probit;context\""))))
 
 (slide
  #:name "Estimate theta"
@@ -369,5 +380,5 @@
  (item #:bullet (bt "Covariates:") " Sequencing quality, Mapping quality, Context, Position, Fragment length")
  (blank 10)
  (para (emph "3. Estimate Genotype Likelihoods"))
- (item #:bullet (arrow 20 0) "theta, inbreeding coefficient, ...")
+ (aitem "theta, inbreeding coefficient, ...")
  )
