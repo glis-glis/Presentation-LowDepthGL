@@ -134,7 +134,7 @@
  #:name "Likelihoods"
  (shadow-frame (big (t "Likelihoods")))
  (para (bt "Base Likelihoods:") (tt " L(A), L(C), L(G), L(T)")
- (bt "Genotype Likelihood:") (tt " L(ab) = 0.5x[L(a) + L(b)]"))
+ (bt "Genotype Likelihood:") (tt " L(ab) = 0.5×[L(a) + L(b)]"))
  (ghost (emph ""))
  (blank 20)
  (hc-append
@@ -194,25 +194,34 @@
         (tt "L(AA) = 0")
         (tt "L(AC) = 0")
         (tt "L(AG) = 0")
-        (tt "L(AT) = 0.5x(0 + 1)")
+        (tt "L(AT) = 0.5×(0 + 1)")
         (tt "L(CC) = 0")
         (tt "L(CG) = 0")
-        (tt "L(CT) = 0.5x(0 + 1)")
+        (tt "L(CT) = 0.5×(0 + 1)")
         (tt "L(GG) = 0")
-        (tt "L(GT) = 0.5x(0 + 1)")
+        (tt "L(GT) = 0.5×(0 + 1)")
         (tt "L(TT) = 1"))))
 
 (slide
- #:name "Post Mortem Damage"
- (shadow-frame (big (t "Post Mortem Damage")))
- (para (t "Deamination of cytosine to uracil: ") (tt "C→U"))
+ #:name "Post-Mortem Damage"
+ (shadow-frame (big (t "Post-Mortem Damage")))
+ (para (t "Deamination of Cytosine to Uracil: ") (tt "C→U"))
  (para (t "Uracil will be read as Thymin: ") (tt "C→U→T"))
  (blank 20)
- (para (bt "Probability of") (tt " C→T ") (bt "transition"))
- (para (tt "     p") (t " = Distance from 5' read end"))
- (para (tt "PMD(p) = a*exp(-b*p) + c"))
- (scale-to-fit (bitmap "imgs/PMD_flat.png") (* client-w 0.9) (/ client-h 1))
- )
+ (para (emph "Estimation of  C→T transition")
+ (t "For every C in the reference, count occurance in data")
+ (aitem "Number of C→T per position")
+ (aitem "Total number of Cs per position"))
+ (blank 10)
+ (para (tt "PMD(C→T, p) = Number(C→T, p)/tot(C, p)"))
+ (para (tt "          p = Distance from 5' read end"))
+ (blank 10)
+ (aitem "Either empiric values or fit exponential function")
+ (aitem "(Same for G→A from 3' if paired ended reads)"))
+
+(slide
+ #:name "Post-Mortem Damage plot"
+ (scale-to-fit (bitmap "imgs/PMD.png") (* client-w 0.6) (/ client-h 1)))
 
 (slide
  #:name "Genotype Likelihoods PMD"
@@ -240,33 +249,36 @@
   (arrow 30 0)
   (para #:width 0.5
         (tt "L(AA) = 0")
-        (tt "L(AC) = 0.5x(0 + 0.3)")
+        (tt "L(AC) = 0.5×(0 + 0.3)")
         (tt "L(AG) = 0")
-        (tt "L(AT) = 0.5x(0 + 1)")
+        (tt "L(AT) = 0.5×(0 + 1)")
         (tt "L(CC) = 0.3")
-        (tt "L(CG) = 0.5x(0.3 + 0)")
-        (tt "L(CT) = 0.5x(0.3 + 1)")
+        (tt "L(CG) = 0.5×(0.3 + 0)")
+        (tt "L(CT) = 0.5×(0.3 + 1)")
         (tt "L(GG) = 0")
-        (tt "L(GT) = 0.5x(0 + 1)")
+        (tt "L(GT) = 0.5×(0 + 1)")
         (tt "L(TT) = 1"))))
 
 (slide
  #:name "Sequencing Errors"
  (shadow-frame (big (t "Sequencing Errors")))
  (para (t "Reported error probability by sequencing machine: ")
-       (tt "Q = -10xlog(E)"))
+       (tt "Q = -10xlog(𝜀)"))
  (para
   (aitem "Not very accurate")
   (aitem "Needs recalibration"))
- (blank 20)
- (para (bt "recal"))
- (para (tt "R = F(Q, p, mappingQuality, fragmentLength, context)  "))
  (blank 10)
- (para (bt "If an error happens, then:")
-       (para (tt "ρ = [[-, A→C, A→G, A→T],"))
+ (para (emph "Estimate recalibration")
+ (aitem "Use monomorphic/haploid sites")
+       (tt "𝜀 = logistic[f0 + f1(Q) + f2(p) + f3(mappingQuality)")
+       (tt "              + f4(fragmentLength) + f5(context)]")
+       (tt "f = polynomial, empiric, probit or 0")
+       (para (tt "𝜌 = [[-, A→C, A→G, A→T],"))
        (para (tt "     [C→A, -, C→G, C→T],"))
        (para (tt "     [G→A, G→C, -, G→T],"))
-       (para (tt "     [T→A, T→C, T→G, -]]"))))
+       (para (tt "     [T→A, T→C, T→G, -]]")))
+       (blank 10)
+       (para (aitem "Expectation–maximization (EM) algorithm")))
 
 (slide
  #:name "Sequencing Errors plot"
@@ -277,8 +289,8 @@
  #:name "Genotype Likelihoods recal"
  (shadow-frame (big (t "Genotype Likelihoods with Recal")))
  (para (emph "Assuming:"))
- (para (t "PMD(C→T) = 0.3, Sequencing Error = 0.05")
- (t "ρ(A→T) = 0.3, ρ(C→T) = 0.2, ρ(G→T) = 0.5"))
+ (para (t "PMD(C→T) = 0.3, 𝜀  = 0.05")
+ (t "𝜌(A→T) = 0.3, 𝜌(C→T) = 0.2, 𝜌(G→T) = 0.5"))
  (blank 20)
  (hc-append
   30
@@ -292,10 +304,10 @@
                        8) gap-size))
   (arrow 30 0)
   (para #:width 0.5
-        (tt "L(A) = 0.3x0.05")
-        (tt "L(C) = 0.7x(0.2x0.05)")
-        (tt "       + 0.3x(0.95)")
-        (tt "L(G) = 0.5x0.05")
+        (tt "L(A) = 0.3×0.05")
+        (tt "L(C) = 0.7×(0.2×0.05)")
+        (tt "       + 0.3×(0.95)")
+        (tt "L(G) = 0.5×0.05")
         (tt "L(T) = 0.95"))
   (arrow 30 0)
   (para #:width 0.5
@@ -320,7 +332,7 @@
  (blank 20)
  (eaitem "Simulate data")
  (eaitem "Estimate PMD")
- (eaitem "Estimate recal"))
+ (eaitem "Estimate sequencing error recalibration"))
 
 (slide
  #:name "Simulation"
@@ -333,9 +345,10 @@
  (hc-append (scale-to-fit (bitmap "imgs/PMD.png") (/ client-w 2) (/ client-h 1))
             (scale-to-fit (bitmap "imgs/recal.png") (/ client-w 2) (/ client-h 1))))
 
+
 (slide
- #:name "Estimate PMD"
- (shadow-frame (big (t "Estimate PMD")))
+ #:name "Estimate PMD ATLAS"
+ (shadow-frame (big (t "Estimate PMD pattern")))
 
  (para (small (tt "~/Git/atlas/build/atlas --task PMD --bam *.bam --fasta *.fasta"))
  (small (tt "  --pmdModels \"doubleStrand:Exponential:Exponential\"")))
@@ -346,8 +359,8 @@
  )
 
 (slide
- #:name "Estimate recal"
- (shadow-frame (big (t "Estimate recal")))
+ #:name "Estimate recal ATLAS"
+ (shadow-frame (big (t "Estimate recalibration Pattern")))
 
  (para (small (tt "~/Git/atlas/build/atlas --task recal --bam *.bam  --regions chr3.bed"))
  (small (tt "  --pmd *_PMD.txt --recal \"intercept;quality:polynomial2\"")))
@@ -360,7 +373,7 @@
 
 (slide
  #:name "Estimate theta"
- (shadow-frame (big (t "Estimate recal")))
+ (shadow-frame (big (t "Estimate 𝜃")))
 
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam")))
  (blank 50)
@@ -370,15 +383,16 @@
 (slide
  #:name "Calculating Genotype Likelihoods"
  (shadow-frame (big (t "Calculating Genotype Likelihoods")))
- (para (emph "1. Estimate PMD"))
- (aitem "Compare to reference")
- (aitem "Assume symetric mutations")
+ (para (emph "1. Estimate PMD pattern"))
  (item #:bullet (bt "Covariate:") "Position")
+ (aitem "Count difference to C (and G) in reference")
+ (aitem "Assume symmetric mutations")
  (blank 10)
- (para (emph "2. Estimate Sequencing Errors"))
+ (para (emph "2. Estimate Sequencing Error recalibration"))
+ (item #:bullet (bt "Covariates:") "Sequencing quality, Mapping quality, Context, Position, Fragment length")
  (aitem "Use monomorphic/haploid sites")
- (item #:bullet (bt "Covariates:") " Sequencing quality, Mapping quality, Context, Position, Fragment length")
+ (aitem "EM on multi-variate recalibration function")
  (blank 10)
  (para (emph "3. Estimate Genotype Likelihoods"))
- (aitem "theta, inbreeding coefficient, ...")
+ (aitem "𝜃, inbreeding coefficient, ...")
  )
