@@ -380,6 +380,76 @@
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam"))
  (small (tt "  --pmd *_PMD.txt --recal *_recal.txt"))))
 
+
+(slide
+ #:name "Implementation Inheritance"
+ (shadow-frame (big (t "Old-School Inheritance")))
+ (para (bt "The problem with ") (emph "implementation ") (bt "inheritance"))
+ (blank 20)
+ (frame (codeblock-pict
+         "class Recal {
+  virtual f_quality(Data d) {return empiric(d);}
+  virtual f_context(Data d) {return empiric(d);}
+public:
+  probability(Data d) {return logistic(f_quality(d) + f_context(d));}
+};"))
+ (cc-superimpose (pip-arrow-line 50 50 10)
+ (pip-arrow-line -50 50 10))
+ (blank 20)
+ (hc-append 50
+            (frame (codeblock-pict
+                    "class RecalPolyQ : Recal {
+  f_quality(Data d) override
+    {return polynomial(d);}
+};")) 
+            
+            (frame (codeblock-pict
+                    "class RecalPolyC  : Recal {
+  f_context(Data d) override
+    {return polynomial(d);}
+};")))
+(hc-append 100 (pip-arrow-line 50 50 10) (pip-arrow-line -50 50 10))
+ (blank 20)
+ (frame (codeblock-pict
+         "class RecalPolyQC  : RecalPolyQ, RecalPolyC {
+// How to cherry-pick functions?
+};")))
+
+(slide
+ #:name "Interface Inheritance"
+ (shadow-frame (big (t "Modern Inheritance")))
+ (para (emph "Interface ") (bt "inheritance for the save"))
+ (blank 20)
+ (frame (codeblock-pict
+         "class Recal {
+  QualityFn* qf;
+  ContextFn* cf;
+public:
+  initialize(QualityFn* q, ContextFn* c) {qf = q; cf = c;}
+  probability(Data d) {return logistic(qf->apply(d) + cf->apply(d));}
+};"))
+ (blank 20)
+ (hc-append 50
+            (frame (codeblock-pict
+ "class QualityFn {
+  virtual apply(Data d)
+   = 0;
+};
+class ContextFn {
+  virtual apply(Data d)
+   = 0;
+};"))
+
+(frame (codeblock-pict
+ "class EmpiricQuality : QualityFn {
+  apply(Data d) override
+    {return empiric(d);}
+};
+class PolyQuality : QualityFn {
+  apply(Data d) override
+    {return polynomial(d);}
+};"))))
+
 (slide
  #:name "Calculating Genotype Likelihoods"
  (shadow-frame (big (t "Calculating Genotype Likelihoods")))
