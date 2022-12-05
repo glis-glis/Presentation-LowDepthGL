@@ -1,11 +1,10 @@
-~/Git/atlas/build/atlas --task simulate --ploidy 2,2,1 --pmd "doubleStrand:Exponential[50,0.5,0.1,0.01]:Exponential[50,0.5,0.1,0.01]" --recal "intercept[0.1];quality:polynomial[0.8,-0.05]"
-
+~/Git/atlas/build/atlas --task simulate --ploidy 2,2,1 --depth 2 --chrLength 500000 --pmd "doubleStrand:Exponential[50,0.5,0.1,0.01]:Exponential[50,0.5,0.1,0.01]" --recal "intercept[0.1];quality:polynomial[0.8,-0.05]"
 
 ~/Git/atlas/build/atlas --task PMD --bam *.bam --fasta *.fasta --pmdModels "doubleStrand:Exponential:Exponential"
-~/Git/atlas/build/atlas --task PMD --bam *.bam --fasta *.fasta --pmdModels "singleStrand:Empiric:Empiric"
 
-echo "chr3 0 60000" > chr3.bed
+echo "chr3 0 500000" > chr3.bed
 ~/Git/atlas/build/atlas --task recal --bam *.bam --recal "intercept;quality:polynomial2" --pmd *_PMD.txt --regions chr3.bed
 
 ~/Git/atlas/build/atlas --task theta --bam *.bam 
-~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt  --recal *_recal.txt
+~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt
+~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt --recal *_recal.txt

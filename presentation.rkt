@@ -338,7 +338,7 @@
  #:name "Simulation"
  (shadow-frame (big (t "Simulation")))
 
- (para (small (tt "~/Git/atlas/build/atlas --task simulate --ploidy 2,2,1"))
+ (para (small (tt "~/Git/atlas/build/atlas --task simulate --ploidy 2,2,1 --depth 2 --chrLength 500000"))
  (small (tt "  --pmd \"doubleStrand:Exponential[50,0.5,0.1,0.01]:Exponential[50,0.5,0.1,0.01]\""))
  (small (tt "  --recal \"intercept[0.1];quality:polynomial[0.8,-0.05]\"")))
  (blank 20)
@@ -377,6 +377,8 @@
 
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam")))
  (blank 50)
+ (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt")))
+ (blank 50)
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam"))
  (small (tt "  --pmd *_PMD.txt --recal *_recal.txt"))))
 
@@ -385,8 +387,7 @@
  (shadow-frame (big (t "Calculating Genotype Likelihoods")))
  (para (emph "1. Estimate PMD pattern"))
  (item #:bullet (bt "Covariate:") "Position")
- (aitem "Count difference to C (and G) in reference")
- (aitem "Assume symmetric mutations")
+ (aitem "PMD(C→T) = Number(C→T)/Number(C)")
  (blank 10)
  (para (emph "2. Estimate Sequencing Error recalibration"))
  (item #:bullet (bt "Covariates:") "Sequencing quality, Mapping quality, Context, Position, Fragment length")
