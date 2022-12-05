@@ -135,7 +135,6 @@
  (shadow-frame (big (t "Likelihoods")))
  (para (bt "Base Likelihoods:") (tt " L(A), L(C), L(G), L(T)")
  (bt "Genotype Likelihood:") (tt " L(ab) = 0.5×[L(a) + L(b)]"))
- (ghost (emph ""))
  (blank 20)
  (hc-append
   30
@@ -170,8 +169,6 @@
  #:name "Genotype Likelihoods"
  (shadow-frame (big (t "Genotype Likelihoods")))
  (emph "Assuming no Errors")
- (ghost (emph ""))
- (ghost (emph ""))
  (blank 20)
  (hc-append
   30
@@ -205,16 +202,16 @@
 (slide
  #:name "Post-Mortem Damage"
  (shadow-frame (big (t "Post-Mortem Damage")))
- (para (t "Deamination of Cytosine to Uracil: ") (tt "C→U"))
- (para (t "Uracil will be read as Thymin: ") (tt "C→U→T"))
+ (para (t "Deamination of Cytosine to Uracil: C→U"))
+ (para (t "Uracil will be read as Thymin: C→U→T"))
  (blank 20)
  (para (emph "Estimation of  C→T transition")
+ (t "Position: Distance from 5' read end")
  (t "For every C in the reference, count occurance in data")
  (aitem "Number of C→T per position")
  (aitem "Total number of Cs per position"))
  (blank 10)
  (para (tt "PMD(C→T, p) = Number(C→T, p)/tot(C, p)"))
- (para (tt "          p = Distance from 5' read end"))
  (blank 10)
  (aitem "Either empiric values or fit exponential function")
  (aitem "(Same for G→A from 3' if paired ended reads)"))
@@ -227,8 +224,6 @@
  #:name "Genotype Likelihoods PMD"
  (shadow-frame (big (t "Genotype Likelihoods with PMD")))
  (emph "Assuming PMD(C→T) = 0.3")
- (ghost (emph ""))
- (ghost (emph ""))
  (blank 20)
  (hc-append
   30
@@ -335,6 +330,92 @@
  (eaitem "Estimate sequencing error recalibration"))
 
 (slide
+ #:name "Implementation Inheritance"
+ (shadow-frame (big (t "Implementation Inheritance")))
+ (frame (with-scale 0.85 (codeblock-pict
+         "class Recal {
+  virtual double f_quality(Quality q) {return empiric(q);}
+  virtual couble f_context(Context c) {return empiric(c);}
+public:
+  double probability(Data d)
+    {return logistic(f_quality(d.Q) + f_context(d.C));}
+};")))
+ (cc-superimpose (pip-arrow-line 40 40 20)
+ (pip-arrow-line -40 40 20))
+ (blank 20)
+ (hc-append 20
+            (frame (with-scale 0.85 (codeblock-pict
+                    "class RecalPolyQ : Recal {
+  double f_quality(Quality q) override
+    {return polynomial(q);}
+};")))
+            
+            (frame (with-scale 0.85 (codeblock-pict
+                    "class RecalPolyC  : Recal {
+  double f_context(Context c) override
+    {return polynomial(c);}
+};"))))
+(hc-append 80 (pip-arrow-line 40 40 20) (pip-arrow-line -40 40 20))
+ (blank 20)
+ (frame (with-scale 0.85 (codeblock-pict
+         "class RecalPolyQC  : RecalPolyQ, RecalPolyC {
+  // How to cherry-pick functions?
+};"))))
+
+(slide
+ #:name "Implementation Inheritance"
+ (shadow-frame (big (t "Implementation Inheritance: Pro & Contra")))
+ (pitem "'Natural evolution' from mono- to polymorphic")
+ (pitem "Straightforward to implement")
+ (pitem "Works well in small, easy cases")
+ (blank 20)
+ (mitem "Multiplicative complexity (NxM implementations)")
+ (mitem "Long inheritance chains")
+ (mitem "Diamond inheritance problem")
+ (mitem "Magohamoth-sized classes")
+ (mitem "'But I only want feature a, not a, b, c & d!'")
+ )
+
+(slide
+ #:name "Interface Inheritance"
+ (shadow-frame (big (t "Interface Inheritance")))
+ (frame (with-scale 0.85 (codeblock-pict
+         "struct QualityFn {virtual double apply(Quality q) = 0;};
+struct ContextFn {virtual double apply(Context c) = 0;};")))
+(blank 20)
+ (frame (with-scale 0.85 (codeblock-pict
+"class Recal {
+  QualityFn* qf;
+  ContextFn* cf;
+public:
+  Recal(QualityFn* q, ContextFn* c) {qf = q; cf = c;}
+  double probability(Data d)
+    {return logistic(qf->apply(d.Q) + cf->apply(d.C));}
+};")))
+ (blank 20)
+ (hc-append 50
+            (frame (with-scale 0.85 (codeblock-pict
+                    "class EmpiricQuality final: QualityFn {
+  double apply(Quality q) override
+    {return empiric(q);}
+};
+
+class PolyQuality final : QualityFn {
+  double apply(Quality q) override
+    {return polynomial(q);}
+};")))
+            (frame (with-scale 0.85 (codeblock-pict
+                    "class EmpiricContext final : ContextFn {
+  double apply(Context c) override
+    {return empiric(c);}
+};
+
+class PolyContext final : ContextFn {
+  double apply(Context c) override
+    {return polynomial(c);}
+};")))))
+
+(slide
  #:name "Simulation"
  (shadow-frame (big (t "Simulation")))
 
@@ -381,6 +462,8 @@
  (blank 50)
  (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam"))
  (small (tt "  --pmd *_PMD.txt --recal *_recal.txt"))))
+
+
 
 (slide
  #:name "Calculating Genotype Likelihoods"
