@@ -8,6 +8,7 @@
 (require slideshow/code)
 (require pict/shadow)
 (require slideshow/text)
+(require plot)
 
 (define (tt str)
   (text str (current-code-font) (current-font-size)))
@@ -48,6 +49,7 @@
 (current-gap-size 12)
 (current-font-size 28)
 (current-comment-color (current-id-color)) 
+(plot-font-face (current-code-font))
 
 (slide
  #:name "Title"
@@ -203,11 +205,11 @@
  #:name "Post-Mortem Damage"
  (shadow-frame (big (t "Post-Mortem Damage")))
  (para (t "Deamination of Cytosine to Uracil: C→U"))
- (para (t "Uracil will be read as Thymin: C→U→T"))
+ (para (t "Uracil will be read as Thymine: C→U→T"))
  (blank 20)
  (para (emph "Estimation of  C→T transition")
  (t "Position: Distance from 5' read end")
- (t "For every C in the reference, count occurance in data")
+ (t "For every C in the reference, count occurrence in data")
  (aitem "Number of C→T per position")
  (aitem "Total number of Cs per position"))
  (blank 10)
@@ -218,7 +220,17 @@
 
 (slide
  #:name "Post-Mortem Damage plot"
- (scale-to-fit (bitmap "imgs/PMD.png") (* client-w 0.6) (/ client-h 1)))
+ (shadow-frame (big (t "Post-Mortem Damage")))
+ (plot-pict (function (lambda (x) (+ 0.01 (* 0.5 (exp (* -0.1 x))))) 0 100
+                      #:label "0.5×exp(-0.1×p) + 0.01"
+                      #:width 3)
+            #:width (* client-w 0.75)
+            #:aspect-ratio 2
+            #:y-max 0.6
+            #:x-label "Distance from 5' read end"
+            #:y-label "C→T probability"
+            )
+ )
 
 (slide
  #:name "Genotype Likelihoods PMD"
@@ -265,7 +277,7 @@
  (blank 10)
  (para (emph "Estimate recalibration")
  (aitem "Use monomorphic/haploid sites")
-       (tt "𝜀 = logistic[f0 + f1(Q) + f2(p) + f3(mappingQuality)")
+       (tt "𝜀 = logistic[f0 + f1(T(Q)) + f2(p) + f3(mappingQuality)")
        (tt "              + f4(fragmentLength) + f5(context)]")
        (tt "f = polynomial, empiric, probit or 0")
        (para (tt "𝜌 = [[-, A→C, A→G, A→T],"))
@@ -275,10 +287,40 @@
        (blank 10)
        (para (aitem "Expectation–maximization (EM) algorithm")))
 
+(define (logit x) (- (log x) (log (- 1 x))))
+(define (T x) (logit (expt 10 (/ (- x) 10))))
+
+
+(define (expit x) (/ (exp x) (+ 1 (exp x))))
 (slide
  #:name "Sequencing Errors plot"
- (scale-to-fit (bitmap "imgs/recal.png") (* client-w 0.9) (/ client-h 1))
- )
+ (shadow-frame (big (t "Sequencing Errors")))
+
+ (plot-pict (list (function (lambda (x) (expit (T x))) 0 100
+                      #:label "f1 = logistic(Q)"
+                      #:color 2
+                      #:width 2)
+(function (lambda (x) (expit (+ 0.01 (* 0.8 (T x)) (* -0.05 (T x) (T x))))) 0 100
+                      #:label "f2 = logistic(0.01 + 0.8×Q -0.05×Q²)"
+                      #:color 4
+                      #:width 2))
+            #:width (* client-w 0.75)
+            #:height (* client-w 0.25)
+            #:aspect-ratio 3
+            #:x-label "Quality score"
+            #:y-label "Error Probability")
+
+ (plot-pict (list (function (lambda (x) (* -10 (log (expit (T x)) 10))) 0 100
+                      #:color 2
+                      #:width 2)
+(function (lambda (x) (* -10 (log (expit (+ 0.01 (* 0.8 (T x)) (* -0.05 (T x) (T x)))) 10))) 0 100
+                      #:color 4
+                      #:width 2))
+            #:width (* client-w 0.75)
+            #:height (* client-w 0.25)
+            #:aspect-ratio 3
+            #:x-label "Quality score"
+            #:y-label "Recalibrated Quality"))
 
 (slide
  #:name "Genotype Likelihoods recal"
@@ -384,7 +426,7 @@ public:
 struct ContextFn {virtual double apply(Context c) = 0;};")))
 (blank 20)
  (frame (with-scale 0.85 (codeblock-pict
-"class Recal {
+"class Recal final {
   QualityFn* qf;
   ContextFn* cf;
 public:
@@ -423,8 +465,8 @@ class PolyContext final : ContextFn {
  (small (tt "  --pmd \"doubleStrand:Exponential[50,0.5,0.1,0.01]:Exponential[50,0.5,0.1,0.01]\""))
  (small (tt "  --recal \"intercept[0.1];quality:polynomial[0.8,-0.05]\"")))
  (blank 20)
- (hc-append (scale-to-fit (bitmap "imgs/PMD.png") (/ client-w 2) (/ client-h 1))
-            (scale-to-fit (bitmap "imgs/recal.png") (/ client-w 2) (/ client-h 1))))
+ (hc-append 20 (scale-to-fit (bitmap "imgs/PMD.png") (* client-w 0.4) (/ client-h 1))
+            (scale-to-fit (bitmap "imgs/recal.png") (* client-w 0.4) (/ client-h 1))))
 
 
 (slide
