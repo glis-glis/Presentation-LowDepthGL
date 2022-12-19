@@ -68,19 +68,33 @@
  )
 
 (slide
- #:name "Low-Depth DNA"
- (shadow-frame (big (t "Low-Depth DNA")))
- (t "What is Low-Depth DNA"))
+ #:name "High-Depth DNA"
+ (shadow-frame (big (t "High-Depth DNA")))
+ (small (para #:width 0.7 #:align 'center
+         (hc-append (tt "01 TCTAGCGCT") (blue "A") (gray "T") (tt "GGAGTCTT...GCTGGC         "))
+         (hc-append (tt "02  CTAGCGCT") (blue "A") (red "G") (tt "GGAGTCTT...GCTGGCG        "))
+         (hc-append (tt "03   TCGCGCT") (blue "A") (blue "A") (tt "GGAGTCAT...GCTGGCGA       "))
+         (hc-append (tt "04    ATCGCT") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGAC      "))
+         (hc-append (tt "05     GCGCT") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGACA     "))
+         (hc-append (tt "06      CGCT") (blue "A") (red "G") (tt "GGCGTCTT...GCTGGCGACAG    "))
+         (hc-append (tt "07       GCT") (gray "C") (red "G") (tt "GGAGTCTT...GCTGGCGACAGG   "))
+         (hc-append (tt "08        CT") (blue "A") (blue "A") (tt "GGAGTCTT...GAGAGAGAGAGAG  "))
+         (hc-append (tt "09         T") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGACAGGCA "))
+         (hc-append (tt "10          ") (blue "A") (red "G") (tt "GGAGTCTT...GCTGGCGACAGGCAG"))
+         (tt "             .")
+         (tt "             .")
+         (tt "             ."))))
 
 (slide
  #:name "Low-Depth DNA"
  (shadow-frame (big (t "Low-Depth DNA")))
- (t "Why/Where Low-Depth DNA"))
+ (small (para #:width 0.9 #:align 'center
+         (hc-append (tt "01 TCTAGCGCT") (blue "A") (red "T") (tt "GGAGTCTT...GCTGGC            "))
+         (hc-append (tt "02  CTAGCGCT") (blue "A") (tt "                              "))
+         (hc-append (tt "03            ") (tt "      TT...GCTGGCGACA        "))
+         (hc-append (tt "04            ") (tt "           GCTGGCGACAGGCAG   "))
+         (hc-append (tt "05            ") (tt "                    AGGCAG...")))))
 
-(slide
- #:name "Low-Depth DNA"
- (shadow-frame (big (t "Low-Depth DNA")))
- (t "What is Low-Depth DNA"))
 
 (slide
  #:name "Calling Genotype 10"
@@ -90,9 +104,9 @@
   (frame (inset (table 2
                        (list
                         (bt "Read") (bt "Base")
-                        (t "1") (tt "A")
+                        (t "1") (tt "T")
                         (t "2") (tt "G")
-                        (t "3") (tt "T")
+                        (t "3") (tt "A")
                         (t "4") (tt "A")
                         (t "5") (tt "A")
                         (t "6") (tt "G")
@@ -116,9 +130,9 @@
   (frame (inset (table 2
                        (list
                         (bt "Read") (bt "Base")
-                        (t "1") (blue "A")
+                        (t "1") (gray "T")
                         (t "2") (red "G")
-                        (t "3") (gray "T")
+                        (t "3") (blue "A")
                         (t "4") (blue "A")
                         (t "5") (blue "A")
                         (t "6") (red "G")
