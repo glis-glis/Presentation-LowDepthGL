@@ -51,16 +51,36 @@
 (current-comment-color (current-id-color)) 
 (plot-font-face (current-code-font))
 
+(define (logit x) (- (log x) (log (- 1 x))))
+(define (T x) (logit (expt 10 (/ (- x) 10))))
+(define (expit x) (/ (exp x) (+ 1 (exp x))))
+
 (slide
  #:name "Title"
- (shadow-frame (big (t "Genotype Likelihood Estimation")))
- ;(hc-append (bt "Why") (t " and ") (bt "How"))
+ (shadow-frame (para #:align 'center (big (t "Estimating Genotype Likelihoods"))
+                     (blank 50)
+                     (hc-append (t "Low-Depth") (t " and ") (t "Ancient") (t " DNA"))))
  (blank 50)
  (bt "Andreas Füglistaler, PhD")
  (t "Wegmann Group")
  (blank 50)
  (scale-to-fit (bitmap "imgs/unifr.png") (/ client-w 6) (/ client-h 6))
  )
+
+(slide
+ #:name "Low-Depth DNA"
+ (shadow-frame (big (t "Low-Depth DNA")))
+ (t "What is Low-Depth DNA"))
+
+(slide
+ #:name "Low-Depth DNA"
+ (shadow-frame (big (t "Low-Depth DNA")))
+ (t "Why/Where Low-Depth DNA"))
+
+(slide
+ #:name "Low-Depth DNA"
+ (shadow-frame (big (t "Low-Depth DNA")))
+ (t "What is Low-Depth DNA"))
 
 (slide
  #:name "Calling Genotype 10"
@@ -169,7 +189,7 @@
 
 (slide
  #:name "Genotype Likelihoods"
- (shadow-frame (big (t "Genotype Likelihoods")))
+ (shadow-frame (big (t "Likelihoods")))
  (emph "Assuming no Errors")
  (blank 20)
  (hc-append
@@ -234,7 +254,7 @@
 
 (slide
  #:name "Genotype Likelihoods PMD"
- (shadow-frame (big (t "Genotype Likelihoods with PMD")))
+ (shadow-frame (big (t "Likelihoods with PMD")))
  (emph "Assuming PMD(C→T) = 0.3")
  (blank 20)
  (hc-append
@@ -269,29 +289,39 @@
 (slide
  #:name "Sequencing Errors"
  (shadow-frame (big (t "Sequencing Errors")))
- (para (t "Reported error probability by sequencing machine: ")
-       (tt "Q = -10xlog(𝜀)"))
+ (para (t "Reported error probability by sequencing machine: "))
+       (cc-superimpose 
+ (plot-pict (function (lambda (x) (expit (T x))) 0 100
+                      #:width 2)
+            #:width (* client-w 0.75)
+            #:height (* client-w 0.25)
+            #:aspect-ratio 3
+            #:x-label "Q: Quality score"
+            #:y-label "𝜀: Error Probability") (tt "Q = -10xlog(𝜀)"))
+
+(blank 20)
  (para
-  (aitem "Not very accurate")
-  (aitem "Needs recalibration"))
- (blank 10)
- (para (emph "Estimate recalibration")
- (aitem "Use monomorphic/haploid sites")
-       (tt "𝜀 = logistic[f0 + f1(T(Q)) + f2(p) + f3(mappingQuality)")
-       (tt "              + f4(fragmentLength) + f5(context)]")
+  (mitem "Not very accurate")
+  (mitem "Needs recalibration")))
+
+(slide
+ #:name "Sequencing Errors Recalibration"
+ (shadow-frame (big (t "Sequencing Errors Recalibration")))
+ (emph "Use monomorphic/haploid sites")
+ (blank 50)
+ (para (tt "𝜀 = logistic[f0 + f1(qualityScore) ")
+       (tt "  + f2(position) + f3(mappingQuality)")
+       (tt "  + f4(fragmentLength)+ f5(previousBase)]")
+       (tt "                               ")
        (tt "f = polynomial, empiric, probit or 0")
-       (para (tt "𝜌 = [[-, A→C, A→G, A→T],"))
-       (para (tt "     [C→A, -, C→G, C→T],"))
-       (para (tt "     [G→A, G→C, -, G→T],"))
-       (para (tt "     [T→A, T→C, T→G, -]]")))
-       (blank 10)
-       (para (aitem "Expectation–maximization (EM) algorithm")))
-
-(define (logit x) (- (log x) (log (- 1 x))))
-(define (T x) (logit (expt 10 (/ (- x) 10))))
+       (tt "                              ")
+       (tt "𝜌 = [[-, A→C, A→G, A→T],[C→A, -, C→G, C→T],")
+       (tt "    [G→A, G→C, -, G→T],[T→A, T→C, T→G, -]]"))
+       (blank 20)
+       (para (emph "Expectation–maximization (EM) algorithm")
+             (t "Maximize ")(tt "Sum[log(GenotypeLikelihoods)]")))
 
 
-(define (expit x) (/ (exp x) (+ 1 (exp x))))
 (slide
  #:name "Sequencing Errors plot"
  (shadow-frame (big (t "Sequencing Errors")))
