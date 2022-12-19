@@ -89,11 +89,11 @@
  #:name "Low-Depth DNA"
  (shadow-frame (big (t "Low-Depth DNA")))
  (small (para #:width 0.9 #:align 'center
-         (hc-append (tt "01 TCTAGCGCT") (blue "A") (red "T") (tt "GGAGTCTT...GCTGGC            "))
-         (hc-append (tt "02  CTAGCGCT") (blue "A") (tt "                              "))
-         (hc-append (tt "03            ") (tt "      TT...GCTGGCGACA        "))
-         (hc-append (tt "04            ") (tt "           GCTGGCGACAGGCAG   "))
-         (hc-append (tt "05            ") (tt "                    AGGCAG...")))))
+         (hc-append (tt "01 ...TCTAGCGCT") (blue "A") (red "T") (tt "GGAGTC                       "))
+         (hc-append (tt "02               ") (tt "GGAGTCTT...GCT               "))
+         (hc-append (tt "03               ") (tt "       T...GCTGGCG           "))
+         (hc-append (tt "04               ") (tt "                CGACAGGC     "))
+         (hc-append (tt "05               ") (tt "                    AGGCAG...")))))
 
 
 (slide
@@ -414,6 +414,51 @@
  (eaitem "Simulate data")
  (eaitem "Estimate PMD")
  (eaitem "Estimate sequencing error recalibration"))
+
+(slide
+ #:name "C++ Code-Base"
+ (shadow-frame (big (t "Our C++ Code-Base")))
+ (ht-append 50
+(frame (inset (table 1
+                       (small (list
+                        (emph "Coretools")
+                         (t "Input/Output")
+                         (t "Error Management")
+                         (t "Task Management")
+                         (t "Math Functions")
+                         (t "Random Generator")
+                         (t "Types")
+                         (t "Containers")
+                         (t "...")))
+                       lc-superimpose
+                       cc-superimpose
+                       gap-size
+                       8) gap-size))
+(frame (inset (table 1
+                       (small (list
+                        (emph "Genometools")
+                         (t "Genotypes")
+                         (t "GenomePositions")
+                         (t "Fasta-File I/O")
+                         (t "VCF-File I/O")
+                         (t "...")))
+                       lc-superimpose
+                       cc-superimpose
+                       gap-size
+                       8) gap-size))
+(frame (inset (table 1
+                       (small (list
+                        (emph "Stattools")
+                         (t "Directed acyclic graphs")
+                         (t "Expectation-maximization")
+                         (t "Hidden Markov Model")
+                         (t "Markov Chain Monte Carlo")
+                         (t "Maximum Likelihood Estimation")
+                         (t "...")))
+                       lc-superimpose
+                       cc-superimpose
+                       gap-size
+                       8) gap-size))))
 
 (slide
  #:name "Implementation Inheritance"
