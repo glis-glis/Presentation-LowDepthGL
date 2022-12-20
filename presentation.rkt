@@ -395,8 +395,8 @@
   (arrow 30 0)
   (para #:width 0.5
         (tt "L(A) = 0.3×0.05")
-        (tt "L(C) = 0.7×(0.2×0.05)")
-        (tt "       + 0.3×(0.95)")
+        (tt "L(C) = 0.7×0.2×0.05")
+        (tt "       + 0.3×0.95")
         (tt "L(G) = 0.5×0.05")
         (tt "L(T) = 0.95"))
   (arrow 30 0)
@@ -436,6 +436,7 @@
                          (t "Error Management")
                          (t "Task Management")
                          (t "Math Functions")
+                         (t "String Functions")
                          (t "Random Generator")
                          (t "Types")
                          (t "Containers")
@@ -556,15 +557,40 @@ for (auto p: genotypeLikelihoods)
    ll += std::log(p);")))))
 
 (slide
+ #:name "Recal Implementation"
+ (shadow-frame (big (t "Recal Implementation")))
+ (para (tt "𝜀 = logistic[f0 + f1(qualityScore) + f2(position) + f3(mappingQuality)")
+       (tt "              + f4(fragmentLength)+ f5(previousBase)]")
+       (tt "                                                     ")
+       (tt "f : polynomial, empiric, probit or 0"))
+ (blank-line)
+(frame (with-scale 0.85 (codeblock-pict
+         "class Recal {
+  double f_0;
+  double f_quality(Quality q)          {return some_f(q);}
+  couble f_position(Position p)        {return some_f(p);}
+  double f_mappingQuality(MQuality mq) {return some_f(mq);}
+  double f_fragmentLength(FLength fl)  {return some_f(fl);}
+  couble f_previousBase(PrevBase pb)   {return some_f(pb);}
+
+public:
+  double probability(Data d) {
+    return logistic(f_0 + f_quality(d.Q)
+                    + f_position(d.p) + f_mappingQuality(d.mq)
+                    + f_fragmentLegnth(d.fl) + f_previousBase(d.pb));
+  }
+};"))))
+
+(slide
  #:name "Implementation Inheritance"
  (shadow-frame (big (t "Implementation Inheritance")))
  (frame (with-scale 0.85 (codeblock-pict
          "class Recal {
   virtual double f_quality(Quality q) {return empiric(q);}
-  virtual couble f_context(Context c) {return empiric(c);}
+  virtual couble f_position(Position p) {return empiric(p);}
 public:
   double probability(Data d)
-    {return logistic(f_quality(d.Q) + f_context(d.C));}
+    {return logistic(f_quality(d.Q) + f_context(d.p));}
 };")))
  (cc-superimpose (pip-arrow-line 40 40 20)
  (pip-arrow-line -40 40 20))
@@ -577,14 +603,14 @@ public:
 };")))
             
             (frame (with-scale 0.85 (codeblock-pict
-                    "class RecalPolyC  : Recal {
-  double f_context(Context c) override
-    {return polynomial(c);}
+                    "class RecalPolyP  : Recal {
+  double f_context(Position p) override
+    {return polynomial(p);}
 };"))))
 (hc-append 80 (pip-arrow-line 40 40 20) (pip-arrow-line -40 40 20))
  (blank 20)
  (frame (with-scale 0.85 (codeblock-pict
-         "class RecalPolyQC  : RecalPolyQ, RecalPolyC {
+         "class RecalPolyQP  : RecalPolyQ, RecalPolyP {
   // How to cherry-pick functions?
 };"))))
 
@@ -612,11 +638,11 @@ struct ContextFn {virtual double apply(Context c) = 0;};")))
  (frame (with-scale 0.85 (codeblock-pict
 "class Recal final {
   QualityFn* qf;
-  ContextFn* cf;
+  PositionFn* pf;
 public:
-  Recal(QualityFn* q, ContextFn* c) {qf = q; cf = c;}
+  Recal(QualityFn* q, PositionFn* p) {qf = q; pf = p;}
   double probability(Data d)
-    {return logistic(qf->apply(d.Q) + cf->apply(d.C));}
+    {return logistic(qf->apply(d.Q) + pf->apply(d.p));}
 };")))
  (blank 20)
  (hc-append 50
@@ -631,14 +657,14 @@ class PolyQuality final : QualityFn {
     {return polynomial(q);}
 };")))
             (frame (with-scale 0.85 (codeblock-pict
-                    "class EmpiricContext final : ContextFn {
-  double apply(Context c) override
-    {return empiric(c);}
+                    "class EmpiricPosition final : PositionFn {
+  double apply(Position p) override
+    {return empiric(p);}
 };
 
-class PolyContext final : ContextFn {
-  double apply(Context c) override
-    {return polynomial(c);}
+class PolyPosition final : PositionFn {
+  double apply(Position p) override
+    {return polynomial(p);}
 };")))))
 
 (slide
