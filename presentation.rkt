@@ -68,33 +68,26 @@
  )
 
 (slide
+ #:name "Our Projects"
+ (shadow-frame (big (t "Our Projects"))))
+
+(slide
  #:name "High-Depth DNA"
  (shadow-frame (big (t "High-Depth DNA")))
  (small (para #:width 0.7 #:align 'center
-         (hc-append (tt "01 TCTAGCGCT") (blue "A") (gray "T") (tt "GGAGTCTT...GCTGGC         "))
-         (hc-append (tt "02  CTAGCGCT") (blue "A") (red "G") (tt "GGAGTCTT...GCTGGCG        "))
-         (hc-append (tt "03   TCGCGCT") (blue "A") (blue "A") (tt "GGAGTCAT...GCTGGCGA       "))
-         (hc-append (tt "04    ATCGCT") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGAC      "))
-         (hc-append (tt "05     GCGCT") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGACA     "))
-         (hc-append (tt "06      CGCT") (blue "A") (red "G") (tt "GGCGTCTT...GCTGGCGACAG    "))
-         (hc-append (tt "07       GCT") (gray "C") (red "G") (tt "GGAGTCTT...GCTGGCGACAGG   "))
-         (hc-append (tt "08        CT") (blue "A") (blue "A") (tt "GGAGTCTT...GAGAGAGAGAGAG  "))
-         (hc-append (tt "09         T") (blue "A") (blue "A") (tt "GGAGTCTT...GCTGGCGACAGGCA "))
-         (hc-append (tt "10          ") (blue "A") (red "G") (tt "GGAGTCTT...GCTGGCGACAGGCAG"))
+         (hc-append (tt "01 TCTAGCGCT") (red "T") (tt "GGAGTCTT...GCTGGC         "))
+         (hc-append (tt "02  CTAGCGCT") (red "G") (tt "GGAGTCTT...GCTGGCG        "))
+         (hc-append (tt "03   TCGCGCT") (red "A") (tt "GGAGTCAT...GCTGGCGA       "))
+         (hc-append (tt "04    ATCGCT") (red "A") (tt "GGAGTCTT...GCTGGCGAC      "))
+         (hc-append (tt "05     GCGCT") (red "A") (tt "GGAGTCTT...GCTGGCGACA     "))
+         (hc-append (tt "06      CGCT") (red "G") (tt "GGCGTCTT...GCTGGCGACAG    "))
+         (hc-append (tt "07       GCT") (red "G") (tt "GGAGTCTT...GCTGGCGACAGG   "))
+         (hc-append (tt "08        CT") (red "A") (tt "GGAGTCTT...GAGAGAGAGAGAG  "))
+         (hc-append (tt "09         T") (red "A") (tt "GGAGTCTT...GCTGGCGACAGGCA "))
+         (hc-append (tt "10          ") (red "G") (tt "GGAGTCTT...GCTGGCGACAGGCAG"))
          (tt "             .")
          (tt "             .")
          (tt "             ."))))
-
-(slide
- #:name "Low-Depth DNA"
- (shadow-frame (big (t "Low-Depth DNA")))
- (small (para #:width 0.9 #:align 'center
-         (hc-append (tt "01 ...TCTAGCGCT") (blue "A") (red "T") (tt "GGAGTC                       "))
-         (hc-append (tt "02               ") (tt "GGAGTCTT...GCT               "))
-         (hc-append (tt "03               ") (tt "       T...GCTGGCG           "))
-         (hc-append (tt "04               ") (tt "                CGACAGGC     "))
-         (hc-append (tt "05               ") (tt "                    AGGCAG...")))))
-
 
 (slide
  #:name "Calling Genotype 10"
@@ -147,6 +140,15 @@
   (arrow 30 0)
   (para #:width 0.5 (hc-append (big (blue "A")) (big (red "G"))))))
 
+(slide
+ #:name "Low-Depth DNA"
+ (shadow-frame (big (t "Low-Depth DNA")))
+ (small (para #:width 0.9 #:align 'center
+         (hc-append (tt "01 ...TCTAGCGCT") (red "T") (tt "GGAGTC                       "))
+         (hc-append (tt "02              ") (tt "GGAGTCTT...GCT               "))
+         (hc-append (tt "03              ") (tt "       T...GCTGGCG           "))
+         (hc-append (tt "04              ") (tt "                CGACAGGC     "))
+         (hc-append (tt "05              ") (tt "                    AGGCAG...")))))
 
 (slide
  #:name "Calling Genotype 1"
@@ -238,17 +240,17 @@
 (slide
  #:name "Post-Mortem Damage"
  (shadow-frame (big (t "Post-Mortem Damage")))
- (para (t "Deamination of Cytosine to Uracil: C→U"))
- (para (t "Uracil will be read as Thymine: C→U→T"))
+ (para (t "Deamination of Cytosine to Uracil: C→U")
+ (t "Uracil will be read as Thymine: C→U→T"))
  (blank 20)
  (para (emph "Estimation of  C→T transition")
- (t "Position: Distance from 5' read end")
- (t "For every C in the reference, count occurrence in data")
+ (t "For every C in reference, count occurrence in data")
  (aitem "Number of C→T per position")
  (aitem "Total number of Cs per position"))
- (blank 10)
+ (item #:bullet (bt "Position:") (t " Distance from read-end"))
+ (blank 20)
  (para (tt "PMD(C→T, p) = Number(C→T, p)/tot(C, p)"))
- (blank 10)
+ (blank 20)
  (aitem "Either empiric values or fit exponential function")
  (aitem "(Same for G→A from 3' if paired ended reads)"))
 
@@ -324,10 +326,10 @@
  (emph "Use monomorphic/haploid sites")
  (blank 50)
  (para (tt "𝜀 = logistic[f0 + f1(qualityScore) ")
-       (tt "  + f2(position) + f3(mappingQuality)")
-       (tt "  + f4(fragmentLength)+ f5(previousBase)]")
+       (tt "              + f2(position) + f3(mappingQuality)")
+       (tt "              + f4(fragmentLength)+ f5(previousBase)]")
        (tt "                               ")
-       (tt "f = polynomial, empiric, probit or 0")
+       (tt "f : polynomial, empiric, probit or 0")
        (tt "                              ")
        (tt "𝜌 = [[-, A→C, A→G, A→T],[C→A, -, C→G, C→T],")
        (tt "    [G→A, G→C, -, G→T],[T→A, T→C, T→G, -]]"))
@@ -409,11 +411,12 @@
  (hc-append (emph "A") (t "nalysis ") (emph "T") (t "ools for ") (emph "L") (t "ow-coverage and ") (emph "A") (t "ncient ") (emph "S") (t "amples"))
  (blank 20)
  (para (bt "48 Tasks"))
- (aitem "call, theta, inbreeding, GLF, majorMinor, ...")
+ (aitem "call, inbreeding, GLF, majorMinor, ...")
  (blank 20)
  (eaitem "Simulate data")
  (eaitem "Estimate PMD")
- (eaitem "Estimate sequencing error recalibration"))
+ (eaitem "Estimate sequencing error recalibration")
+ (eaitem "Estimate heterozygosity (𝜃)"))
 
 (slide
  #:name "C++ Code-Base"
@@ -459,6 +462,90 @@
                        cc-superimpose
                        gap-size
                        8) gap-size))))
+
+(slide
+ #:name "C++ Code-Base 2"
+ (shadow-frame (big (t "Our C++ Code-Base")))
+ (hc-append 200
+(frame (inset (table 2
+                       (list
+                        (t "") (emph "Coretools")
+                        (t "") (emph "Genometools")
+                        (t "") (emph "Stattools")
+                        (blank-line) (blank-line)
+                        (colorize (t "✔") "darkgreen") (t "Common interface")
+                        (colorize (t "✔") "darkgreen") (t "Consistent naming")
+                        (colorize (t "✔") "darkgreen") (t "Version control")
+                        (colorize (t "✔") "darkgreen") (t "Thoroughly tested")
+                        (colorize (t "✔") "darkgreen") (t "Optimized performance")
+                        (t "") (t "..."))
+                       lc-superimpose
+                       cc-superimpose
+                       gap-size
+                       8) gap-size))
+(vl-append (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "Atlas"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "Bangolin"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "ApproxWF"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "SexEstimation"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "TreeSwirl"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "Birp"))
+           (blank-line)
+           (hc-append (pip-arrow-line -150 0 20) (tt "  ") (bt "...")))))
+
+(slide
+ #:name "Weak Types"
+ (shadow-frame (big (t "Weak Types")))
+ (frame (with-scale 0.85 (codeblock-pict
+"// Unscoped enumerations:
+enum Base {A, C, G, T};
+enum Genotype {AA, AC, AG, AT, CC, CG, CT, GG, GT, TT};
+
+double baseLikelihoods[4];
+double genotypeLikelihoods[10];
+
+baseLikelihoods[A]  = 0.5;
+baseLikelihoods[C]  = 3.1; // Not a probability!
+baseLikelihoods[A] *= 5;   // -> 2.5
+baseLikelihoods[1]  = 0.7; // 0-indexed!
+
+genotypeLikelihoods[GG] = 0.9;
+genotypeLikelihoods[G]  = 0.9; // index = AG!"))))
+
+(slide
+ #:name "Strong Types"
+ (shadow-frame (big (t "Strong Types")))
+
+ (para (frame (with-scale 0.85 (codeblock-pict
+"using coretools::TProbability; // Only defined in interval: [0, 1] 
+using coretools::TStrongArray; // Only allows scoped index-types"))))
+ (blank 10)
+ (para (frame (with-scale 0.85 (codeblock-pict
+"// Scoped enumerations:
+enum class Base {A, C, G, T, size};
+enum class Genotype {AA, AC, AG, AT, CC, CG, CT, GG, GT, TT, size};
+
+TStrongArray<TProbability, Base> baseLikelihoods;
+TStrongArray<TProbability, Genotype> genotypeLikelihoods;
+
+baseLikelihoods[Base::A]  = 0.5;
+baseLikelihoods[Base::C]  = 3.1; // Exception in debug-mode
+baseLikelihoods[Base::A] *= 5;   // Will not compile!
+baseLikelihoods[1]        = 0.7; // Will not compile!
+
+genotypeLikelihoods[Genotype::GG] = 0.9;
+genotypeLikelihoods[Base::G]      = 0.9; // Will not compile!"))))
+ (blank 10)
+ (para 
+  (frame (with-scale 0.85 (codeblock-pict
+"// Range-based Loops                                              
+double ll = 0; 
+for (auto p: genotypeLikelihoods)
+   ll += std::log(p);")))))
 
 (slide
  #:name "Implementation Inheritance"
