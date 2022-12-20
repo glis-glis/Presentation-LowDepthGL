@@ -68,8 +68,15 @@
  )
 
 (slide
- #:name "Our Projects"
- (shadow-frame (big (t "Our Projects"))))
+ #:name "Why Low-Depth"
+ (shadow-frame (big (t "Why Low-Depth")))
+(vr-append 20
+ (hb-append 20
+   (scale-to-fit (bitmap "imgs/finches.png") (* client-w .9) (* client-h .3))
+   (scale-to-fit (bitmap "imgs/tsetse.png") (* client-w .9) (* client-h .3)))
+(hb-append 20
+   (scale-to-fit (bitmap "imgs/cheddar_man.png") (* client-w .9) (* client-h .3))
+   (scale-to-fit (bitmap "imgs/hippo.png") (* client-w .9) (* client-h .3)))))
 
 (slide
  #:name "High-Depth DNA"
@@ -475,6 +482,7 @@
                         (blank-line) (blank-line)
                         (colorize (t "✔") "darkgreen") (t "Common interface")
                         (colorize (t "✔") "darkgreen") (t "Consistent naming")
+                        (colorize (t "✔") "darkgreen") (t "Consistent formatting")
                         (colorize (t "✔") "darkgreen") (t "Version control")
                         (colorize (t "✔") "darkgreen") (t "Thoroughly tested")
                         (colorize (t "✔") "darkgreen") (t "Optimized performance")
