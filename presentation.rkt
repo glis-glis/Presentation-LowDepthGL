@@ -69,7 +69,7 @@
 
 (slide
  #:name "Why Low-Depth"
- (shadow-frame (big (t "Why Low-Depth")))
+ (shadow-frame (big (t "Why Low-Depth?")))
 (vr-append 20
  (hb-append 20
    (scale-to-fit (bitmap "imgs/finches.png") (* client-w .9) (* client-h .3))
@@ -417,6 +417,8 @@
  (shadow-frame (big (t "ATLAS")))
  (hc-append (emph "A") (t "nalysis ") (emph "T") (t "ools for ") (emph "L") (t "ow-coverage and ") (emph "A") (t "ncient ") (emph "S") (t "amples"))
  (blank 20)
+ (tt "https://bitbucket.org/wegmannlab/atlas")
+ (blank 20)
  (para (bt "48 Tasks"))
  (aitem "call, inbreeding, GLF, majorMinor, ...")
  (blank 20)
@@ -427,7 +429,12 @@
 
 (slide
  #:name "C++ Code-Base"
- (shadow-frame (big (t "Our C++ Code-Base")))
+ (shadow-frame (big (t "Our C++ Libraries")))
+
+ (small (vl-append (tt "https://bitbucket.org/wegmannlab/coretools")
+ (tt "https://bitbucket.org/wegmannlab/genometools")
+ (tt "https://bitbucket.org/wegmannlab/stattools")))
+ (blank 20)
  (ht-append 50
 (frame (inset (table 1
                        (small (list
@@ -532,6 +539,7 @@ genotypeLikelihoods[G]  = 0.9; // index = AG!"))))
  (para (frame (with-scale 0.85 (codeblock-pict
 "using coretools::TProbability; // Only defined in interval: [0, 1] 
 using coretools::TStrongArray; // Only allows scoped index-types"))))
+ 'next
  (blank 10)
  (para (frame (with-scale 0.85 (codeblock-pict
 "// Scoped enumerations:
@@ -549,6 +557,7 @@ baseLikelihoods[1]        = 0.7; // Will not compile!
 genotypeLikelihoods[Genotype::GG] = 0.9;
 genotypeLikelihoods[Base::G]      = 0.9; // Will not compile!"))))
  (blank 10)
+ 'next
  (para 
   (frame (with-scale 0.85 (codeblock-pict
 "// Range-based Loops                                              
@@ -586,11 +595,11 @@ public:
  (shadow-frame (big (t "Implementation Inheritance")))
  (frame (with-scale 0.85 (codeblock-pict
          "class Recal {
-  virtual double f_quality(Quality q) {return empiric(q);}
+  virtual double f_quality(Quality q)   {return empiric(q);}
   virtual couble f_position(Position p) {return empiric(p);}
 public:
   double probability(Data d)
-    {return logistic(f_quality(d.Q) + f_context(d.p));}
+    {return logistic(f_quality(d.Q) + f_position(d.p));}
 };")))
  (cc-superimpose (pip-arrow-line 40 40 20)
  (pip-arrow-line -40 40 20))
@@ -604,7 +613,7 @@ public:
             
             (frame (with-scale 0.85 (codeblock-pict
                     "class RecalPolyP  : Recal {
-  double f_context(Position p) override
+  double f_position(Position p) override
     {return polynomial(p);}
 };"))))
 (hc-append 80 (pip-arrow-line 40 40 20) (pip-arrow-line -40 40 20))
@@ -634,6 +643,28 @@ public:
  (frame (with-scale 0.85 (codeblock-pict
          "struct QualityFn {virtual double apply(Quality q) = 0;};
 struct ContextFn {virtual double apply(Context c) = 0;};")))
+ (blank 20)
+ (hc-append 20
+            (frame (with-scale 0.85 (codeblock-pict
+                    "struct EmpiricQuality final: QualityFn {
+  double apply(Quality q) override
+    {return empiric(q);}
+};
+
+struct PolyQuality final: QualityFn {
+  double apply(Quality q) override
+    {return polynomial(q);}
+};")))
+            (frame (with-scale 0.85 (codeblock-pict
+                    "struct EmpiricPosition final: PositionFn {
+  double apply(Position p) override
+    {return empiric(p);}
+};
+
+struct PolyPosition final: PositionFn {
+  double apply(Position p) override
+    {return polynomial(p);}
+};"))))
 (blank 20)
  (frame (with-scale 0.85 (codeblock-pict
 "class Recal final {
@@ -643,29 +674,7 @@ public:
   Recal(QualityFn* q, PositionFn* p) {qf = q; pf = p;}
   double probability(Data d)
     {return logistic(qf->apply(d.Q) + pf->apply(d.p));}
-};")))
- (blank 20)
- (hc-append 50
-            (frame (with-scale 0.85 (codeblock-pict
-                    "class EmpiricQuality final: QualityFn {
-  double apply(Quality q) override
-    {return empiric(q);}
-};
-
-class PolyQuality final : QualityFn {
-  double apply(Quality q) override
-    {return polynomial(q);}
-};")))
-            (frame (with-scale 0.85 (codeblock-pict
-                    "class EmpiricPosition final : PositionFn {
-  double apply(Position p) override
-    {return empiric(p);}
-};
-
-class PolyPosition final : PositionFn {
-  double apply(Position p) override
-    {return polynomial(p);}
-};")))))
+};"))))
 
 (slide
  #:name "Simulation"
@@ -686,7 +695,7 @@ class PolyPosition final : PositionFn {
  (para (small (tt "~/Git/atlas/build/atlas --task PMD --bam *.bam --fasta *.fasta"))
  (small (tt "  --pmdModels \"doubleStrand:Exponential:Exponential\"")))
  (blank 10)
- (bt "also possible")
+ (para (bt "also possible:"))
  (blank 10)
  (para (small (tt "  --pmdModels \"singleStrand:Empiric:Empiric\"")))
  )
@@ -695,10 +704,10 @@ class PolyPosition final : PositionFn {
  #:name "Estimate recal ATLAS"
  (shadow-frame (big (t "Estimate recalibration Pattern")))
 
- (para (small (tt "~/Git/atlas/build/atlas --task recal --bam *.bam  --regions chr3.bed"))
+ (para (small (tt "~/Git/atlas/build/atlas --task recal --bam *.bam --regions chr3.bed"))
  (small (tt "  --pmd *_PMD.txt --recal \"intercept;quality:polynomial2\"")))
  (blank 10)
- (bt "also possible")
+ (para (bt "also possible:"))
  (blank 10)
  (para (small (tt "  --recal \"intercept;quality:empiric\""))
  (small (tt "  --recal \"intercept;quality;position;context;fragmentLength;mappingQuality\""))
@@ -708,14 +717,11 @@ class PolyPosition final : PositionFn {
  #:name "Estimate theta"
  (shadow-frame (big (t "Estimate 𝜃")))
 
- (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam")))
+ (small (para (tt "~/Git/atlas/build/atlas --task theta --bam *.bam                       ")
  (blank 50)
- (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt")))
+ (tt "~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt                    ")
  (blank 50)
- (para (small (tt "~/Git/atlas/build/atlas --task theta --bam *.bam"))
- (small (tt "  --pmd *_PMD.txt --recal *_recal.txt"))))
-
-
+ (tt "~/Git/atlas/build/atlas --task theta --bam *.bam --pmd *_PMD.txt --recal *_recal.txt"))))
 
 (slide
  #:name "Calculating Genotype Likelihoods"
